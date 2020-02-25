@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Channels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InvestmentBuilderCore\InvestmentBuilderCore.csproj" />
+    <ProjectReference Include="..\InvestmentBuilderLib\InvestmentBuilderLib.csproj" />
+    <ProjectReference Include="..\PerformanceBuilderLib\PerformanceBuilderLib.csproj" />
+    <ProjectReference Include="..\Transports\Transports.csproj" />
+  </ItemGroup>
+
+</Project>

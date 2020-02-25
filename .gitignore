@@ -338,3 +338,28 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+#binary files
+*.exe
+*.dll
+*.lib
+*.pdb
+*.suo
+
+obj
+bin
+debug
+release
+packages
+node_modules
+dist
+*.VC.opendb
+*.VC.db
+*.vcxproj.user
