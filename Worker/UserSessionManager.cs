@@ -8,20 +8,10 @@ using Transports;
 using Transports.Session;
 using Unity;
 using System.Collections.Concurrent;
+using System;
 
 namespace Worker
 {
-    /// <summary>
-    /// this endpoint manager class handles all the authentication requests from the 
-    /// middleware server. it creates a usersession if the authentiction is 
-    /// successful 
-    /// </summary>
-    internal interface ISessionManager
-    {
-        Task<UserSession> GetUserSession(Middleware.Message message);
-        void RemoveUserSession(string sessionId);
-    }
-
     /// <summary>
     /// Manager usersessions. Maintains a lazy cache of usersessions. If user session not present
     /// for a user, will authenticate user against authentication server.
@@ -36,8 +26,7 @@ namespace Worker
         public UserSessionManager(IConnectionSession session)
             : base(session)
         {
-            GetSession().RegisterMessageHandler(EndpointMessageHandler);
-            GetSession().RegisterChannelListener("USER_SESSION_UPDATE");
+            GetSession().RegisterChannelListener("GET_USER_SESSION_RESPONSE");
         }
 
         //return the usersession for this session. If it returns null then
@@ -47,19 +36,29 @@ namespace Worker
             UserSession userSession = null;
             if (_userSessions.TryGetValue(sessionId, out userSession) == true)
             {
-                return Task.FromResult<UserSession>(userSession);
+                var task = Task.FromResult<UserSession>(userSession);
+                task.ConfigureAwait(false);
+                return task;
             }
 
             // retrieve the usersession from the authentication service
             TaskCompletionSource<UserSession> ts;
-            if(_pendingRequests.TryGetValue(sessionId, out ts) == true)
+            if(_pendingRequests.TryGetValue(sessionId, out ts) == false)
             {
-                //request already pending...
-                return ts.Task;
+                //Send a request to the authentication server to return the usersession
+                //for this user
+                ts = new TaskCompletionSource<UserSession>();
+                ts.Task.ConfigureAwait(false);
+                _pendingRequests.TryAdd(sessionId, ts);
+                var request = new UserSessionRequestDto
+                {
+                    SessionId = sessionId
+                };
+
+                GetSession().SendMessageToChannel("GET_USER_SESSION_REQUEST", MiddlewareUtils.SerialiseObjectToString(request), "", "", null);
             }
 
-            var request = new 
-            GetSession().SendMessageToChannel("GET_USER_SESSION_REQUEST", )
+            return ts.Task;
         }
 
         //remove the specifed session from the list of valid usersessions
@@ -69,7 +68,7 @@ namespace Worker
             _userSessions.TryRemove(sessionId, out session);
         }
 
-        public override void RegisterChannels(IUnityContainer container)
+        public override void RegisterChannels(IUnityContainer container, string service)
         {
         }
 
@@ -81,40 +80,34 @@ namespace Worker
         //user against the authentication database. password must be stored as encrypted
         protected override void EndpointMessageHandler(Message message)
         {
-            if (message.Command == HandlerNames.NOTIFY_CLOSE)
+            try
             {
-                logger.Log(LogLevel.Info, "session closing: {0}", message.Payload);
-                _userSessions.Remove(message.Payload);
-                return;
-            }
-
-            if (message.Command == HandlerNames.LOGIN)
-            {
-                //request to authenticate a login request. authentication process could be
-                //quite slow so marshall onto a separate thread and let that respond when it is ready
-                Task.Factory.StartNew(() =>
+                var response = MiddlewareUtils.DeserialiseObject<UserSessionResponseDto>(message.Payload);
+                TaskCompletionSource<UserSession> ts;
+                if (_pendingRequests.TryRemove(response.SessionID, out ts) == false)
                 {
-                    var login = MiddlewareUtils.DeserialiseObject<LoginPayload>(message.Payload);
-                    var salt = _authdata.GetSalt(login.UserName);
-                    var hash = SaltedHash.GenerateHash(login.Password, salt);
-
-                    bool authenticated = _authdata.AuthenticateUser(login.UserName, hash);
-                    if (authenticated == true)
+                    logger.Error($"Unknown session id from usersession response: {response.SessionID}");
+                }
+                else
+                {
+                    UserSession userSession = null;
+                    if(response.Success == false)
                     {
-                        _userAccountData.AddUser(login.UserName, login.UserName);
-
-                        var userSession = new UserSession(login.UserName, message.SourceId);
-                        var accounts = _accountManager.GetAccountNames(login.UserName).ToList();
-                        var defaultAccount = accounts.FirstOrDefault();
-                        if(defaultAccount != null)
-                        {
-                            userSession.AccountName = defaultAccount;
-                        }
-                        _userSessions.Add(message.SourceId, userSession);
+                        logger.Error($"Unable to validate user for session id {response.SessionID}!");
                     }
-                    GetSession().SendAuthenticationResult(authenticated, authenticated ? "authentication succeded" : "authentication failed", message.RequestId);
+                    else
+                    {
+                        logger.Info($"Validated user for session id {response.SessionID}");
+                        userSession = response.Session;
+                        _userSessions.TryAdd(response.SessionID, userSession);
+                    }
+                    ts.TrySetResult(userSession);
+                }
 
-                });
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
             }
         }
 

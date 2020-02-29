@@ -19,11 +19,15 @@ namespace AuthenticationService.Channels
             _authManager = authManager;
         }
 
+        /// <summary>
+        /// Handles request to get a usersession
+        /// </summary>
         protected override Dto HandleEndpointRequest(UserSession userSession, UserSessionRequestDto payload, ChannelUpdater updater)
         {
             var session = _authManager.GetUserSession(payload.SessionId);
             return new UserSessionResponseDto
             {
+                SessionID = payload.SessionId,
                 Success = session != null,
                 Session = session
             };

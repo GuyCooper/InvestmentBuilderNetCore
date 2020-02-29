@@ -30,6 +30,7 @@ namespace AuthenticationService.Channels
         protected override Dto HandleEndpointRequest(UserSession userSession, UpdateCurrentAccountRequestDto payload, ChannelUpdater update)
         {
             userSession.AccountName = payload.AccountName;
+            //TODO broadcast update to all services so they can update their cache
             return new ResponseDto { Status = true };
         }
     }

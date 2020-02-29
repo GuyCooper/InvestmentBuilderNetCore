@@ -43,7 +43,7 @@ namespace Transports
     {
         string RequestName { get;}
         string ResponseName { get;}
-        void ProcessMessage(IConnectionSession session, string payload, string sourceId,  string requestId);
+        void ProcessMessage(IConnectionSession session, UserSession userSession,  string payload, string sourceId,  string requestId);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ namespace Transports
         /// <summary>
         /// Process an incoming request on this endpoint
         /// </summary>
-        public async void ProcessMessage(IConnectionSession session, string payload, string sourceId, string requestId)
+        public void ProcessMessage(IConnectionSession session, UserSession userSession, string payload, string sourceId, string requestId)
         {
             var requestPayload = ConvertToRequestPayload(payload);
             var updater = GetUpdater(session, userSession, sourceId, requestId);
@@ -93,7 +93,7 @@ namespace Transports
             Dto responsePayload;
             try
             {
-                responsePayload = await HandleEndpointRequestAsync(userSession, requestPayload, updater);
+                responsePayload = HandleEndpointRequest(userSession, requestPayload, updater);
             }
             catch (Exception ex)
             {
@@ -143,20 +143,6 @@ namespace Transports
         protected abstract Dto HandleEndpointRequest(UserSession userSession, Request payload, Update updater);
 
         /// <summary>
-        /// asynchronous abstract method for handling requests on this channel
-        /// </summary>
-
-        protected virtual async Task<Dto> HandleEndpointRequestAsync(UserSession userSession, Request payload, Update updater)
-        {
-            var dto = await Task.Factory.StartNew<Dto>(() =>
-            {
-                return HandleEndpointRequest(userSession, payload, updater);
-            });
-
-            return dto;
-        }
-
-        /// <summary>
         /// Helper method creates a url link for the valuation reort for the specified account on the
         /// specified report date.
         /// </summary>
@@ -174,16 +160,6 @@ namespace Transports
         }
 
         #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Method returns the usersession for the specified session id. 
-        /// </summary>
-        private async virtual UserSession GetUserSession(IConnectionSession session, string sessionID)
-        {
-           
-        }
 
         #region Private Data Members
 

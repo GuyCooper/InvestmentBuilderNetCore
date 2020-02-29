@@ -43,7 +43,7 @@ namespace Worker
         /// <summary>
         /// Abstract method for registering channels.
         /// </summary>
-        public abstract void RegisterChannels(IUnityContainer container);
+        public abstract void RegisterChannels(IUnityContainer container, string service);
 
         #endregion
 

@@ -8,6 +8,7 @@ using Transports;
 using InvestmentBuilderLib;
 using System;
 using AuthenticationService.Dtos;
+using System.Collections.Concurrent;
 
 namespace AuthenticationService
 {
@@ -41,7 +42,7 @@ namespace AuthenticationService
         //remove the specifed session from the list of valid usersessions
         public void RemoveUserSession(string sessionId)
         {
-            _userSessions.Remove(sessionId);
+            RemoveUserSessionCache(sessionId);
         }
 
         /// <summary>
@@ -74,12 +75,12 @@ namespace AuthenticationService
 
         #endregion
 
-        #region Protected Methods
-
         //this method handles authentication calls from the middleware server. authenitcate
         //user against the authentication database. password must be stored as encrypted
         public bool AuthenticateUser(string sessionId, LoginRequestDto login)
         {
+            RemoveUserSessionCache(sessionId);
+
             //request to authenticate a login request. authentication process could be
             //quite slow so marshall onto a separate thread and let that respond when it is ready
             //var login = MiddlewareUtils.DeserialiseObject<LoginPayload>(message.Payload);
@@ -98,15 +99,23 @@ namespace AuthenticationService
                 {
                     session.AccountName = defaultAccount;
                 }
-                _userSessions.Add(sessionId, session);
+                session.IsValid = true;
+                _userSessions.TryAdd(sessionId, session);
             }
 
             return authenticated;
         }
 
-        #endregion
-
         #region Private Methods
+
+        /// <summary>
+        /// Remove user session from cache
+        /// </summary>
+        private void RemoveUserSessionCache(string sessionId)
+        {
+            UserSession session;
+            _userSessions.TryRemove(sessionId, out session);
+        }
 
         /// <summary>
         /// Return the user session for specified session 
@@ -125,7 +134,7 @@ namespace AuthenticationService
 
         #region Private Data Members
 
-        private readonly Dictionary<string, UserSession> _userSessions = new Dictionary<string, UserSession>();
+        private readonly ConcurrentDictionary<string, UserSession> _userSessions = new ConcurrentDictionary<string, UserSession>();
         private IAuthDataLayer _authdata;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private AccountManager _accountManager;

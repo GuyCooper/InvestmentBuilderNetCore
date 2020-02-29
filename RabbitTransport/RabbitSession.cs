@@ -212,8 +212,15 @@ namespace RabbitTransport
                 return;
             }
 
-            var message = Middleware.MiddlewareUtils.DeserialiseObject<Middleware.Message>(payload);
-            _handler(message);
+            try
+            {
+                var message = Middleware.MiddlewareUtils.DeserialiseObject<Middleware.Message>(payload);
+                _handler(message);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
         }
         #endregion
 

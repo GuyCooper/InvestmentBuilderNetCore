@@ -7,6 +7,7 @@ using NLog;
 using Unity;
 using Transports.Session;
 using Transports;
+using System.Threading.Tasks;
 
 namespace Worker
 {
@@ -19,22 +20,24 @@ namespace Worker
         /// <summary>
         /// Constructor.
         /// </summary>
-        public ChannelEndpointManager(IConnectionSession session) 
+        public ChannelEndpointManager(IConnectionSession session, ISessionManager userSessionManager) 
             : base(session)
         {
+            _userSessionManager = userSessionManager;
         }
 
         /// <summary>
         /// Use reflection to construct the list of Endpoint channels defined in this
         /// assembly.
         /// </summary>
-        public override void RegisterChannels(IUnityContainer container )
+        public override void RegisterChannels(IUnityContainer container, string service )
         {
             //register and resolve all concrete classes in this module that are derived 
             //from EndpointChannel
             //first find a list of all the endpoint channels types
             var channelTypes = new List<Type>();
-            foreach ( var t in System.Reflection.Assembly.GetCallingAssembly().GetTypes())
+            var assembley = LoadServiceAssembley(service);
+            foreach ( var t in assembley.GetTypes())
             {
                 if((t.IsAbstract == false)&&(IsEndpointChannelClass(t).ToList().Count > 0))
                 {
@@ -86,30 +89,40 @@ namespace Worker
         /// Method handles an incoming message. delegates the message to the correct
         /// endpoint
         /// </summary>
-        protected override void EndpointMessageHandler(Message message)
+        protected async override void EndpointMessageHandler(Message message)
         {
             if (message.Type != MessageType.REQUEST)
             {
                 //GetLogger().LogError(string.Format("invalid message type: {0}", message.Type));
                 logger.Log(LogLevel.Error, "invalid message type");
-                return;
-            }
-
-            IEndpointChannel channel;
-            if (_channels.TryGetValue(message.Channel, out channel) == true)
-            {
-                try
-                {
-                    channel.ProcessMessage(GetSession(), message.Payload, message.SourceId, message.RequestId);
-                }
-                catch(Exception ex)
-                {
-                    logger.Log(LogLevel.Error, ex);
-                }
             }
             else
             {
-                logger.Log(LogLevel.Error, "invalid channel : {0}", message.Channel);
+                IEndpointChannel channel;
+                if (_channels.TryGetValue(message.Channel, out channel) == true)
+                {
+                    try
+                    {
+                        var userSession = await _userSessionManager.GetUserSession(message.SourceId);
+                        if(userSession == null)
+                        {
+                            //unable to validate user do not continue
+                            logger.Error("User validation failed.");
+                        }
+                        else
+                        {
+                            channel.ProcessMessage(GetSession(), userSession, message.Payload, message.SourceId, message.RequestId);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log(LogLevel.Error, ex);
+                    }
+                }
+                else
+                {
+                    logger.Log(LogLevel.Error, "invalid channel : {0}", message.Channel);
+                }
             }
         }
 
@@ -126,12 +139,22 @@ namespace Worker
             select interfaceType;
         }
 
+        /// <summary>
+        /// Attempt to load the specified service assembley
+        /// </summary>
+        private System.Reflection.Assembly LoadServiceAssembley(string service)
+        {
+            string filename = $"{service}.dll";
+            return System.Reflection.Assembly.LoadFrom(filename);
+        }
+
         #endregion
 
         #region Private Data Members
 
         // List of channels
         private readonly Dictionary<string, IEndpointChannel> _channels = new Dictionary<string, IEndpointChannel>();
+        private readonly ISessionManager _userSessionManager;
         private static NLog.Logger logger = LogManager.GetCurrentClassLogger();
 
         #endregion

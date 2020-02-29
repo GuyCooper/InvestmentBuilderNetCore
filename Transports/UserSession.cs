@@ -11,6 +11,8 @@ namespace Transports
         public AccountIdentifier AccountName { get; set; }
         public ManualPrices UserPrices { get; private set; }
 
+        public bool IsValid { get; set; }
+
         public UserSession(string username, string usersessionid)
         {
             UserName = username;
@@ -27,6 +29,7 @@ namespace Transports
 
     public class UserSessionResponseDto : Dto
     {
+        public string SessionID { get; set; }
         public bool Success { get; set; }
         public UserSession Session { get; set; }
     }

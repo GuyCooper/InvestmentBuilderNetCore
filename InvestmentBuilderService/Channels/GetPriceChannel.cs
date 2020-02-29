@@ -47,28 +47,23 @@ namespace InvestmentBuilderService.Channels
         /// </summary>
         protected override Dto HandleEndpointRequest(UserSession userSession, GetPriceDto payload, ChannelUpdater updater)
         {
-            return null;
-        }
-
-        /// <summary>
-        /// Handle the get price request asynchronously.
-        /// </summary>
-        protected override async Task<Dto> HandleEndpointRequestAsync(UserSession userSession, GetPriceDto payload, ChannelUpdater updater)
-        {
-            var marketDataPrice = await _marketDataSource.RequestPrice(payload.Symbol, payload.Exchange, payload.Source);
-
-            var result = new PriceResponseDto();
-            if(marketDataPrice == null)
+            var task = _marketDataSource.RequestPrice(payload.Symbol, payload.Exchange, payload.Source).ContinueWith< PriceResponseDto >(ts =>
             {
-                result.IsError = true;
-                result.Error = "Fail. Invalid Symbol!";
-            }   
-            else
-            {
-                result.Price = marketDataPrice.Price;
-            }
+                var result = new PriceResponseDto();
+                if (ts.Result == null)
+                {
+                    result.IsError = true;
+                    result.Error = "Fail. Invalid Symbol!";
+                }
+                else
+                {
+                    result.Price = ts.Result.Price;
+                }
+                return result;
+            });
 
-            return result;
+            //this call blocks until the price has been equested/
+            return task.Result;
         }
 
         #endregion
