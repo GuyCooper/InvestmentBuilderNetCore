@@ -4,9 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\debug</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\InvestmentBuilderCore\InvestmentBuilderCore.csproj" />
     <ProjectReference Include="..\InvestmentBuilderLib\InvestmentBuilderLib.csproj" />
+    <ProjectReference Include="..\SQLServerDataLayer\SQLServerDataLayer.csproj" />
     <ProjectReference Include="..\Transports\Transports.csproj" />
   </ItemGroup>
 

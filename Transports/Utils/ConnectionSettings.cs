@@ -59,9 +59,9 @@ namespace Transports.Utils
         /// <summary>
         /// Instantiaite the connection settings
         /// </summary>
-        public ConnectionSettings(string filename, string certificate)
+        public ConnectionSettings(string filename)
         {
-            m_settings = XmlConfigFileLoader.LoadConfiguration<ConnectionSettingsImpl>(filename, certificate);
+            m_settings = XmlConfigFileLoader.LoadConfiguration<ConnectionSettingsImpl>(filename);
         }
 
         #endregion

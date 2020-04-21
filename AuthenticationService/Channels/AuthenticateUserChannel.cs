@@ -1,15 +1,14 @@
 ﻿using AuthenticationService.Dtos;
-using Middleware;
 using Transports;
 
 namespace AuthenticationService.Channels
 {
-
     public class LoginResponseDto : Dto
     {
         public bool Success { get; set; }
         public string SessionID { get; set; }
     }
+
     /// <summary>
     /// Handles user authentication requests.
     /// </summary>

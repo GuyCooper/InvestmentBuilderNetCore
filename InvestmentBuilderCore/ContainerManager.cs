@@ -26,16 +26,16 @@ namespace InvestmentBuilderCore
             }
         }
 
-        public static void RegisterType(Type typeFrom, Type typeTo, bool bHierachialLifetime, params object[] prm)
+        public static void RegisterType(Type typeFrom, Type typeTo, bool bHierachialLifetime)
         {
-            ITypeLifetimeManager lifetimeManager = new ContainerControlledLifetimeManager();
             if (bHierachialLifetime)
             {
-                lifetimeManager = new HierarchicalLifetimeManager();
+                _container.RegisterType(typeFrom, typeTo, new HierarchicalLifetimeManager());
             }
-
-            _container.RegisterType(typeFrom, typeTo, typeFrom.ToString(), lifetimeManager, new InjectionConstructor(prm));
-
+            else
+            {
+                _container.RegisterType(typeFrom, typeTo, new ContainerControlledLifetimeManager());
+            }
         }
 
         public static T ResolveValueOnContainer<T>(IUnityContainer container) where T : class
@@ -67,6 +67,11 @@ namespace InvestmentBuilderCore
         public static IUnityContainer CreateChildContainer()
         {
             return _container.CreateChildContainer();
+        }
+
+        public static void RegisterInstance<T>(T instance)
+        {
+            _container.RegisterInstance<T>(instance);
         }
     }
 }

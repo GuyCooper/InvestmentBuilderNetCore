@@ -14,29 +14,17 @@ namespace InvestmentBuilderCore
         /// <summary>
         /// Load an xml configuration file (optionally encrypted).
         /// </summary>
-        public static T LoadConfiguration<T>(string filename, string certificate)
+        public static T LoadConfiguration<T>(string filename)
         {
             if(string.IsNullOrEmpty(filename))
             {
                 throw new FileNotFoundException("Must specify a valid configuration file.");
             }
 
-            //if (Path.GetExtension(filename) == ".enc")
-            //{
-            //    //Configuration file is encoded.
-            //    //var decrypted = DataEncryption.Encryption.DecryptData(File.ReadAllBytes(filename), certificate);
-            //    //using (var stream = new MemoryStream(decrypted))
-            //    //{
-            //    //    return LoadFromStream<T>(stream);
-            //    //}
-            //}
-            //else
-            //{
-                using (var fs = new FileStream(filename, FileMode.Open))
-                {
-                    return LoadFromStream<T>(fs);
-                }
-            //}
+            using (var fs = new FileStream(filename, FileMode.Open))
+            {
+                return LoadFromStream<T>(fs);
+            }
         }
 
         #endregion

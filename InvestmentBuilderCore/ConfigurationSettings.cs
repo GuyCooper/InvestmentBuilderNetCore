@@ -169,16 +169,16 @@ namespace InvestmentBuilderCore
         /// <summary>
         /// Constructor - just takes filename
         /// </summary>
-        public ConfigurationSettings(string filename) : this(filename, new List<KeyValuePair<string, string>>(), null)
+        public ConfigurationSettings(string filename) : this(filename, new List<KeyValuePair<string, string>>())
         {
         }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public ConfigurationSettings(string filename, List<KeyValuePair<string,string>> overrides, string certificate)
+        public ConfigurationSettings(string filename, List<KeyValuePair<string,string>> overrides)
         {
-            m_configuration = XmlConfigFileLoader.LoadConfiguration<Configuration>(filename, certificate);
+            m_configuration = XmlConfigFileLoader.LoadConfiguration<Configuration>(filename);
 
             //now apply the overrides
             var props = m_configuration.GetType().

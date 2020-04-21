@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<dataSource>Data Source=DESKTOP-JJ9QOJA\SQLEXPRESS;Initial Catalog=InvestmentBuilderTest2;Integrated Security=True</dataSource>
+  <authdataSource>Data Source=DESKTOP-JJ9QOJA\SQLEXPRESS;Initial Catalog=UserAuthentication;Integrated Security=True</authdataSource>
+  <outputFolder>C:\Users\guy\Documents\Guy\InvestmentBuilder</outputFolder>
+  <templatePath>C:\Projects\InvestmentBuilder\Templates</templatePath>
+  <marketDataSource>C:\Users\guy\AppData\Roaming\InvestmentRecordBuilder\yahooMarketData.txt</marketDataSource>
+  <outputCachedMarketDataFile>C:\Users\guy\AppData\Roaming\InvestmentRecordBuilder\CachedData.txt</outputCachedMarketDataFile>
+  <scriptFolder>C:\Projects\InvestmentBuilder\php</scriptFolder>
+  <maxAccountsPerUser>5</maxAccountsPerUser>
+  <indexes>
+		<index>
+			<name>FTSE 100</name>
+			<symbol>FTSE</symbol>
+		</index>
+    <index>
+			<name>S and P 500</name>
+			<symbol>SPX</symbol>
+		</index>
+    <index>
+			<name>Nasdaq</name>
+			<symbol>NDX</symbol>
+		</index>
+    <index>
+      <name>Dax</name>
+      <symbol>GDAXI</symbol>
+    </index>
+    <!--<index>
+      <name>EuroStoxx 50</name>
+      <symbol>ESTOXX50E</symbol>
+    </index>-->
+    <index>
+      <name>Nikkei 225</name>
+      <symbol>N225</symbol>
+    </index>
+    <index>
+      <name>Hang Seng</name>
+      <symbol>HSI</symbol>
+    </index>
+  </indexes>
+  <formats>
+    <format>PDF</format>
+  </formats>
+  <schedule>
+    <task>
+      <name>Yahoo</name>
+      <scheduled>18:31:00</scheduled>
+    </task>
+  </schedule>
+  <auditFile>InvestmentBuilderAudit.dat</auditFile>
+</configuration>

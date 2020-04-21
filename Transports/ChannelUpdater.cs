@@ -1,7 +1,6 @@
 ﻿using System.Timers;
 using System;
 using Transports.Session;
-using Middleware;
 
 namespace Transports
 {
@@ -45,7 +44,7 @@ namespace Transports
             }
             else
             {
-                _session.SendMessageToChannel(_channel, MiddlewareUtils.SerialiseObjectToString(payload), _sourceId, _requestId, null);
+                _session.SendMessageToChannel(_channel, TransportUtils.SerialiseObjectToString(payload), _sourceId, _requestId, null);
             }
         }
 

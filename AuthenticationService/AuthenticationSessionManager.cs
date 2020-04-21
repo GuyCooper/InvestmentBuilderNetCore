@@ -17,7 +17,7 @@ namespace AuthenticationService
         /// </summary>
         public AuthenticationSessionManager(AuthenticationManager authenticationManager)
         {
-            _authenticationManager = authenticationManager;
+            _authenticationManager =  authenticationManager;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace AuthenticationService
         public Task<UserSession> GetUserSession(string sessionId)
         {
             var userSession = _authenticationManager.GetUserSession(sessionId);
-            if(userSession != null)
+            if(userSession == null)
             {
                 userSession = new UserSession(null, sessionId)
                 {
@@ -41,9 +41,10 @@ namespace AuthenticationService
         /// </summary>
         public void RemoveUserSession(string sessionId)
         {
-            throw new NotImplementedException();
+            _authenticationManager.RemoveUserSession(sessionId);
         }
 
         private readonly AuthenticationManager _authenticationManager;
     }
+
 }

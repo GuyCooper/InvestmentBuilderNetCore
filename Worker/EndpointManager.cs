@@ -1,8 +1,5 @@
-﻿using System.Threading.Tasks;
-using Middleware;
-using Unity;
-using System;
-using Transports.Session;
+﻿using Transports.Session;
+using Transports;
 
 namespace Worker
 {
@@ -11,7 +8,7 @@ namespace Worker
     /// registrs with the connection session and multiplexes messages onto the correct endpoint.
     /// 
     /// </summary>
-    internal abstract class EndpointManager : IDisposable
+    internal abstract class EndpointManager
     {
         #region Public Methods
 
@@ -31,19 +28,6 @@ namespace Worker
         {
             return _session;
         }
-
-        /// <summary>
-        /// Dispose.
-        /// </summary>
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Abstract method for registering channels.
-        /// </summary>
-        public abstract void RegisterChannels(IUnityContainer container, string service);
 
         #endregion
 

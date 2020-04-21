@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Middleware;
-using InvestmentBuilderCore;
+﻿using System.Threading.Tasks;
 using NLog;
 using Transports;
 using Transports.Session;
-using Unity;
 using System.Collections.Concurrent;
 using System;
 
@@ -55,7 +50,7 @@ namespace Worker
                     SessionId = sessionId
                 };
 
-                GetSession().SendMessageToChannel("GET_USER_SESSION_REQUEST", MiddlewareUtils.SerialiseObjectToString(request), "", "", null);
+                GetSession().SendMessageToChannel("GET_USER_SESSION_REQUEST", TransportUtils.SerialiseObjectToString(request), "", "", null);
             }
 
             return ts.Task;
@@ -68,10 +63,6 @@ namespace Worker
             _userSessions.TryRemove(sessionId, out session);
         }
 
-        public override void RegisterChannels(IUnityContainer container, string service)
-        {
-        }
-
         #endregion
 
         #region Protected Methods
@@ -82,7 +73,7 @@ namespace Worker
         {
             try
             {
-                var response = MiddlewareUtils.DeserialiseObject<UserSessionResponseDto>(message.Payload);
+                var response = TransportUtils.DeserialiseObject<UserSessionResponseDto>(message.Payload);
                 TaskCompletionSource<UserSession> ts;
                 if (_pendingRequests.TryRemove(response.SessionID, out ts) == false)
                 {

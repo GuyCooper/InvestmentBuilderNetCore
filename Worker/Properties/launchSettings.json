@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Worker": {
+      "commandName": "Project",
+      "commandLineArgs": "AuthenticationService"
+    }
+  }
+}

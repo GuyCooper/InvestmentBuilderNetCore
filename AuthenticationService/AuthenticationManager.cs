@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Middleware;
+﻿using System.Linq;
 using InvestmentBuilderCore;
 using NLog;
 using Transports;
@@ -25,11 +22,11 @@ namespace AuthenticationService
         /// <summary>
         /// Constructor.
         /// </summary>
-        public AuthenticationManager(IAuthDataLayer authtdata, AccountManager accountManager, IUserAccountInterface userAccountData)
+        public AuthenticationManager(IAuthDataLayer authtdata, AccountManager accountManager, IDataLayer dataLayer)
         {
             _authdata = authtdata;
             _accountManager = accountManager;
-            _userAccountData = userAccountData;
+            _userAccountData = dataLayer.UserAccountData;
         }
 
         //return the usersession for this session. If it returns null then
@@ -87,9 +84,13 @@ namespace AuthenticationService
             var salt = _authdata.GetSalt(login.UserName);
             var hash = SaltedHash.GenerateHash(login.Password, salt);
 
+            logger.Info($"Authenticating user: {login.UserName}");
+
             bool authenticated = _authdata.AuthenticateUser(login.UserName, hash);
             if (authenticated == true)
             {
+                logger.Info($"Authentication Succeded for user : {login.UserName}");
+
                 _userAccountData.AddUser(login.UserName, login.UserName);
 
                 UserSession session = new UserSession(login.UserName, sessionId);
@@ -101,6 +102,10 @@ namespace AuthenticationService
                 }
                 session.IsValid = true;
                 _userSessions.TryAdd(sessionId, session);
+            }
+            else
+            {
+                logger.Info($"Authentication failed for user : {login.UserName}");
             }
 
             return authenticated;

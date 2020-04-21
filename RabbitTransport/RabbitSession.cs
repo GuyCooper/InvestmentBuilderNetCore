@@ -2,25 +2,28 @@
 using System.Threading.Tasks;
 using Transports.Session;
 using RabbitMQ.Client;
-using Transports.Utils;
 using RabbitMQ.Client.Events;
 using NLog;
+using Transports.Utils;
 
 namespace RabbitTransport
 {
     /// <summary>
     /// RabbitMQ connection session.
     /// </summary>
-    class RabbitSession : IConnectionSession, IDisposable
+    public class RabbitSession : IConnectionSession, IDisposable
     {
         #region Constructor
 
         /// <summary>
         /// Constructor. connect to the rabbit mq server
         /// </summary>
-        public RabbitSession(ConnectionSettings settings, string appName)
+        public RabbitSession(IConnectionSettings connectionSettings)
         {
-            _factory = new ConnectionFactory() { HostName = settings.ServerConnection.ServerName };
+            logger.Info($"Connecting to RabbitMQ server:");
+
+            _factory = new ConnectionFactory() { HostName = "localhost",
+                                                  Port = 5672};
             _connection = _factory.CreateConnection();
             _model = _connection.CreateModel();
             _sourceID = Guid.NewGuid().ToString();
@@ -105,10 +108,10 @@ namespace RabbitTransport
         /// </summary>
         public void SendMessageToChannel(string channel, string payload, string destination, string requestId, byte[] binaryPayload)
         {
-            var message = new Middleware.Message
+            var message = new Transports.Message
             {
                 Channel = channel,
-                Type = Middleware.MessageType.REQUEST,
+                Type = Transports.MessageType.REQUEST,
                 DestinationId = destination,
                 RequestId = requestId,
                 Payload = payload,
@@ -116,7 +119,7 @@ namespace RabbitTransport
                 SourceId = _sourceID
             };
 
-            var serialisedMessage = Middleware.MiddlewareUtils.SerialiseObject(message);
+            var serialisedMessage = Transports.TransportUtils.SerialiseObject(message);
 
             IBasicProperties properties = null;
             string route = null;
@@ -193,11 +196,6 @@ namespace RabbitTransport
                 throw new ApplicationException("Must connect to server first...");
             }
 
-            if (_handler == null)
-            {
-                throw new ApplicationException("Must register a callback before calling...");
-            }
-
             _model.ExchangeDeclare(exchange: _clientResponseExchange, type: "direct");
         }
 
@@ -214,7 +212,7 @@ namespace RabbitTransport
 
             try
             {
-                var message = Middleware.MiddlewareUtils.DeserialiseObject<Middleware.Message>(payload);
+                var message = Transports.TransportUtils.DeserialiseObject<Transports.Message>(payload);
                 _handler(message);
             }
             catch (Exception ex)

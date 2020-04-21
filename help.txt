@@ -1,0 +1,2 @@
+run rabbitmqtool <params> from command line to run rabbitmq admin tool
+rabbitmqtool --help for options

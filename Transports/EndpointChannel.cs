@@ -2,9 +2,7 @@
 using InvestmentBuilderCore;
 using NLog;
 using System;
-using System.Threading.Tasks;
 using Transports.Session;
-using Middleware;
 using Transports.Utils;
 
 namespace Transports
@@ -110,7 +108,7 @@ namespace Transports
                 }
                 else
                 {
-                    session.SendMessageToChannel(ResponseName, MiddlewareUtils.SerialiseObjectToString(responsePayload), sourceId, requestId, null);
+                    session.SendMessageToChannel(ResponseName, TransportUtils.SerialiseObjectToString(responsePayload), sourceId, requestId, null);
                 }
             }
         }
@@ -130,7 +128,7 @@ namespace Transports
         /// </summary>
         public Request ConvertToRequestPayload(string payload)
         {
-            return payload != null ? MiddlewareUtils.DeserialiseObject<Request>(payload) : new Request();
+            return payload != null ? TransportUtils.DeserialiseObject<Request>(payload) : new Request();
         }
 
         #endregion

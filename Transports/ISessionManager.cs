@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Transports
 {
@@ -19,5 +16,4 @@ namespace Transports
         /// </summary>
         void RemoveUserSession(string sessionId);
     }
-
 }

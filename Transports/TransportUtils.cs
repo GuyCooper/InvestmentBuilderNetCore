@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace Middleware
+namespace Transports
 {
     /// <summary>
     /// Set of various helper methods
     /// </summary>
-    public static class MiddlewareUtils
+    public static class TransportUtils
     {
         /// <summary>
         /// Serialise an object to an array.
@@ -79,7 +79,7 @@ namespace Middleware
         {
             if (data != null && data.Length > 0)
             {
-                var message = DeserialiseObject<Middleware.Message>(data);
+                var message = DeserialiseObject<Message>(data);
                 return $"channel: {message.Channel}\ncommand: {message.Command}\ntype: {message.Type}\nrequestid: {message.RequestId}\nsourceid: {message.SourceId}\ndestinationid: {message.DestinationId}\npayload: {message.Payload}";
             }
             return "";

@@ -14,9 +14,9 @@ namespace SQLServerDataLayer
             return connection;
         }
 
-        public SQLAuthData(string datasource)
+        public SQLAuthData(IConfigurationSettings settings)
         {
-            _connectionStr = datasource;
+            _connectionStr = settings.AuthDatasourceString;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Middleware
+﻿namespace Transports
 {
     /// <summary>
     /// Static class containing message header keys.

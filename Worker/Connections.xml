@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<connections>
+  <serverConnection>
+    <server>ws://localhost:8080/MWARE</server>
+    <username>admin</username>
+    <password>password</password>
+  </serverConnection>
+  <authServerConnection>
+    <server>ws://localhost:9092</server>
+    <username>admin</username>
+    <password>password</password>
+  </authServerConnection>
+</connections>
