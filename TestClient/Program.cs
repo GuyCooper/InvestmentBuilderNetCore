@@ -30,7 +30,7 @@ namespace TestClient
                     }
                 }
 
-                Console.WriteLine("Test Succeded:)");
+                Console.WriteLine("Test Finished");
             }
             catch(Exception ex)
             {
@@ -45,7 +45,14 @@ namespace TestClient
 
         private static void RegisterTasks(IConnectionSession session)
         {
-            m_operations.Add(new LoginOperation(session));
+            var observer = new SessionObserver();
+            m_operations.Add(new LoginOperation(session, observer));
+            m_operations.Add(new GetUserSessionOperation(session, observer, "Argyll Investments"));
+            m_operations.Add(new GetBrokersOperation(session));
+            m_operations.Add(new GetUserAccountsOperation(session));
+            m_operations.Add(new ChangeAccountOperation(session));
+            m_operations.Add(new GetUserSessionOperation(session, observer, "Guy SIPP"));
+            m_operations.Add(new GetPortfolioOperation(session));
         }
 
         private static readonly List<IOperation> m_operations = new List<IOperation>();

@@ -34,7 +34,10 @@ namespace AuthenticationService.Channels
         protected override Dto HandleEndpointRequest(UserSession userSession, LoginRequestDto payload, ChannelUpdater updater)
         {
             var success = _authManager.AuthenticateUser(userSession.SessionId, payload);
-            return new LoginResponseDto { Success = success};
+            return new LoginResponseDto { 
+                                            Success = success, 
+                                            SessionID = userSession.SessionId
+                                        };
         }
 
         #endregion

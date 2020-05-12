@@ -14,6 +14,7 @@ namespace AuthenticationService
             ContainerManager.RegisterType(typeof(IAuthorizationManager), typeof(SQLAuthorizationManager), true);
             ContainerManager.RegisterType(typeof(IAuthDataLayer), typeof(SQLAuthData), true);
             ContainerManager.RegisterType(typeof(IDataLayer), typeof(SQLServerDataLayer.SQLServerDataLayer), true);
+            ContainerManager.RegisterType(typeof(AuthenticationManager), true);
         }
     }
 }

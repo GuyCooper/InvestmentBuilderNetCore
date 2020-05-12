@@ -62,9 +62,9 @@ namespace PerformanceBuilderLib
         #region Private Data
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private IConfigurationSettings _settings;
-        private IDataLayer _dataLayer;
-        private IInvestmentReportWriter _reportWriter;
+        private readonly IConfigurationSettings _settings;
+        private readonly IDataLayer _dataLayer;
+        private readonly IInvestmentReportWriter _reportWriter;
 
         #endregion
     }

@@ -1,6 +1,7 @@
 ﻿using InvestmentBuilderCore;
 using InvestmentBuilderLib;
 using MarketDataServices;
+using SQLServerDataLayer;
 
 namespace InvestmentBuilderService
 {
@@ -12,12 +13,12 @@ namespace InvestmentBuilderService
     {
         public static void RegisterServices()
         {
-            ContainerManager.RegisterType(typeof(IAuthorizationManager), typeof(SQLAuthorizationManager), false);
-            ContainerManager.RegisterType(typeof(IMarketDataService), typeof(MarketDataService), false);
+            ContainerManager.RegisterType(typeof(IAuthorizationManager), typeof(SQLAuthorizationManager), true);
+            ContainerManager.RegisterType(typeof(IMarketDataService), typeof(MarketDataService), true);
             MarketDataRegisterService.RegisterServices();
-            ContainerManager.RegisterType(typeof(IInvestmentReportWriter), typeof(DummyInvestmentReportWriter), false);
-            ContainerManager.RegisterType(typeof(IDataLayer), typeof(SQLServerDataLayer.SQLServerDataLayer), false);
-            ContainerManager.RegisterType(typeof(IInvestmentRecordDataManager), typeof(InvestmentRecordBuilder), false);
+            ContainerManager.RegisterType(typeof(IInvestmentReportWriter), typeof(DummyInvestmentReportWriter), true);
+            ContainerManager.RegisterType(typeof(IDataLayer), typeof(SQLServerDataLayer.SQLServerDataLayer), true);
+            ContainerManager.RegisterType(typeof(IInvestmentRecordDataManager), typeof(InvestmentRecordBuilder), true);
         }
     }
 }

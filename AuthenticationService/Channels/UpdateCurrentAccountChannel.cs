@@ -1,4 +1,6 @@
 ﻿using InvestmentBuilderCore;
+using InvestmentBuilderLib;
+using System.Linq;
 using Transports;
 
 namespace AuthenticationService.Channels
@@ -8,7 +10,7 @@ namespace AuthenticationService.Channels
     /// </summary>
     internal class UpdateCurrentAccountRequestDto : Dto
     {
-        public AccountIdentifier AccountName { get; set; }
+        public int AccountId { get; set; }
     }
 
     /// <summary>
@@ -19,9 +21,10 @@ namespace AuthenticationService.Channels
         /// <summary>
         /// Constructor
         /// </summary>
-        public UpdateCurrentAccountChannel() :
+        public UpdateCurrentAccountChannel(AccountManager accountManager) :
             base("UPDATE_CURRENT_ACCOUNT_REQUEST", "UPDATE_CURRENT_ACCOUNT_RESPONSE")
         {
+            _accountManager = accountManager;
         }
 
         /// <summary>
@@ -29,9 +32,21 @@ namespace AuthenticationService.Channels
         /// </summary>
         protected override Dto HandleEndpointRequest(UserSession userSession, UpdateCurrentAccountRequestDto payload, ChannelUpdater update)
         {
-            userSession.AccountName = payload.AccountName;
-            //TODO broadcast update to all services so they can update their cache
-            return new ResponseDto { Status = true };
+            var userAccounts = _accountManager.GetAccountNames(userSession.UserName);
+            var account = userAccounts.FirstOrDefault(a => a.AccountId == payload.AccountId);
+            var ok = account != null;
+            if (ok)
+            {
+                userSession.AccountName = account;
+            }
+            
+            return new ResponseDto { Status = ok, IsError = !ok, Error = !ok ? "Invalid account id" : "" };
         }
+
+        #region Private Data
+
+        private readonly AccountManager _accountManager;
+
+        #endregion
     }
 }

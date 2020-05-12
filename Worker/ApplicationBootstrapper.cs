@@ -53,15 +53,13 @@ namespace Worker
                 }
             }
 
-            //register the usersesionmanager if it has one.
-            if (sessionManagerType == null)
+            //register the sessionmanager if it has one.
+            if (sessionManagerType != null)
             {
-                sessionManagerType = typeof(UserSessionManager);
+                ContainerManager.RegisterType(typeof(ISessionManager), sessionManagerType, true);
+                var sessionManager = ContainerManager.ResolveValueOnContainer<ISessionManager>(sessionManagerType, container);
+                endpointManager.SetSessionManager(sessionManager);
             }
-
-            ContainerManager.RegisterType(sessionManagerType, true);
-            var sessionManager = ContainerManager.ResolveValueOnContainer<ISessionManager>(sessionManagerType, container);
-            endpointManager.SetSessionManager(sessionManager);
 
             //now register each endpoint channel
             foreach (var channel in channelTypes)

@@ -3,6 +3,30 @@ call rabbitmqtool purge queue name=GET_USER_SESSION_REQUEST
 call rabbitmqtool purge queue name=UPDATE_CURRENT_ACCOUNT_REQUEST
 call rabbitmqtool purge queue name=UPDATE_INVESTMENT_PRICE_REQUEST
 call rabbitmqtool purge queue name=UPDATE_VALUTION_DATE_REQUEST
+call rabbitmqtool purge queue name=ADD_RECEIPT_TRANSACTION_REQUEST
+call rabbitmqtool purge queue name=ADD_PAYMENT_TRANSACTION_REQUEST
+call rabbitmqtool purge queue name=CREATE_ACCOUNT_REQUEST
+call rabbitmqtool purge queue name=GET_ACCOUNT_DETAILS_REQUEST
+call rabbitmqtool purge queue name=GET_ACCOUNT_MEMBERS_REQUEST
+call rabbitmqtool purge queue name=GET_ACCOUNT_NAMES_REQUEST
+call rabbitmqtool purge queue name=GET_BROKERS_REQUEST
+call rabbitmqtool purge queue name=GET_CASH_FLOW_REQUEST
+call rabbitmqtool purge queue name=GET_CURRENCIES_REQUEST
+call rabbitmqtool purge queue name=GET_INVESTMENT_SUMMARY_REQUEST
+call rabbitmqtool purge queue name=GET_LAST_TRANSACTION_REQUEST
+call rabbitmqtool purge queue name=GET_PORTFOLIO_REQUEST
+call rabbitmqtool purge queue name=GET_PRICE_REQUEST
+call rabbitmqtool purge queue name=GET_RECENT_REPORTS_REQUEST
+call rabbitmqtool purge queue name=GET_RECENT_VALUATION_DATES_REQUEST
+call rabbitmqtool purge queue name=GET_REDEMPTIONS_REQUEST
+call rabbitmqtool purge queue name=GET_TRANSACTION_PARAMETERS_REQUEST
+call rabbitmqtool purge queue name=LOAD_REPORT_REQUEST
+call rabbitmqtool purge queue name=REMOVE_TRANSACTION_REQUEST
+call rabbitmqtool purge queue name=REQUEST_REDEMPTION_REQUEST
+call rabbitmqtool purge queue name=SELL_TRADE_REQUEST
+call rabbitmqtool purge queue name=UNDO_LAST_TRANSACTION_REQUEST
+call rabbitmqtool purge queue name=UPDATE_ACCOUNT_DETAILS_REQUEST
+call rabbitmqtool purge queue name=UPDATE_TRADE_REQUEST
 
 pause
 

@@ -73,5 +73,10 @@ namespace InvestmentBuilderCore
         {
             _container.RegisterInstance<T>(instance);
         }
+
+        public static bool IsRegistered<T>()
+        {
+            return _container.IsRegistered<T>();
+        }
     }
 }

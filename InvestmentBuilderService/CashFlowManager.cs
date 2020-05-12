@@ -23,9 +23,9 @@ namespace InvestmentBuilderService
     /// </summary>
     internal class CashFlowManager
     {
-        private AccountService _accountService;
-        private IClientDataInterface _clientData;
-        private CashAccountTransactionManager _cashTransactionManager;
+        private readonly AccountService _accountService;
+        private readonly IClientDataInterface _clientData;
+        private readonly CashAccountTransactionManager _cashTransactionManager;
 
         public CashFlowManager(AccountService accountService, IDataLayer dataLayer,
             CashAccountTransactionManager cashTransactionManager)

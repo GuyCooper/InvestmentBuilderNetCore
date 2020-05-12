@@ -68,7 +68,7 @@ namespace TestClient
         protected abstract RequestDto GetRequest();
         protected abstract bool HandleResponse(ResponseDto response);
 
-        private readonly ManualResetEvent m_completed = new ManualResetEvent(false);
+        private readonly AutoResetEvent m_completed = new AutoResetEvent(false);
 
         private readonly IConnectionSession m_session;
 

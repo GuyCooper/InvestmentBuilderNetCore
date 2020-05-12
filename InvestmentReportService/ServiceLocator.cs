@@ -2,6 +2,7 @@
 using InvestmentBuilderLib;
 using InvestmentReportGenerator;
 using MarketDataServices;
+using PerformanceBuilderLib;
 using SQLServerDataLayer;
 
 namespace InvestmentReportService
@@ -13,12 +14,13 @@ namespace InvestmentReportService
     {
         public static void RegisterServices()
         {
-            ContainerManager.RegisterType(typeof(IAuthorizationManager), typeof(SQLAuthorizationManager), false);
-            ContainerManager.RegisterType(typeof(IMarketDataService), typeof(MarketDataService), false);
+            ContainerManager.RegisterType(typeof(IAuthorizationManager), typeof(SQLAuthorizationManager), true);
+            ContainerManager.RegisterType(typeof(IMarketDataService), typeof(MarketDataService), true);
             MarketDataRegisterService.RegisterServices();
-            ContainerManager.RegisterType(typeof(IInvestmentReportWriter), typeof(PdfInvestmentReportWriter), false);
-            ContainerManager.RegisterType(typeof(IDataLayer), typeof(SQLServerDataLayer.SQLServerDataLayer), false);
-            ContainerManager.RegisterType(typeof(IInvestmentRecordDataManager), typeof(InvestmentRecordBuilder), false);
+            ContainerManager.RegisterType(typeof(IInvestmentReportWriter), typeof(PdfInvestmentReportWriter), true);
+            ContainerManager.RegisterType(typeof(IDataLayer), typeof(SQLServerDataLayer.SQLServerDataLayer), true);
+            ContainerManager.RegisterType(typeof(IInvestmentRecordDataManager), typeof(InvestmentRecordBuilder), true);
+            ContainerManager.RegisterType(typeof(PerformanceBuilder), true);
         }
     }
 }

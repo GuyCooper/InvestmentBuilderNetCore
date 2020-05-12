@@ -4,6 +4,7 @@ using NLog;
 using RabbitTransport;
 using System;
 using System.Collections.Generic;
+using Transports;
 using Transports.Session;
 using Transports.Utils;
 
@@ -20,13 +21,17 @@ namespace Worker
             {
                 if(args.Length == 0)
                 {
-                    Console.WriteLine("Syntax: Worker <service name>");
+                    Console.WriteLine("Syntax: Worker <service1> <service2> ...");
                     return;
                 }
 
-                var service = args[0];
+                var services = new List<string>();
+                for(int i = 0; i < args.Length; i++)
+                {
+                    services.Add(args[i]);
+                }
 
-                _logger.Info($"Starting worker service {service}");
+                _logger.Info($"Starting worker services {string.Join(',', services)}");
 
                 var configfile = "InvestmentBuilderConfig.xml";
                 var connectionsFile = "Connections.xml";
@@ -50,9 +55,17 @@ namespace Worker
 
                     var channelManager = new ChannelEndpointManager(session);
 
-                    _logger.Info($"Registering services for {service}...");
-                    // Register all the endpoints for this service
-                    ApplicationBootstrapper.LoadService(child, service, channelManager);
+                    foreach (var service in services)
+                    {
+                        _logger.Info($"Registering service {service}...");
+                        // Register all the endpoints for this service
+                        ApplicationBootstrapper.LoadService(child, service, channelManager);
+                    }
+
+                    if(!ContainerManager.IsRegistered<ISessionManager>())
+                    {
+                        ContainerManager.RegisterType(typeof(UserSessionManager), true);
+                    }
 
                     _logger.Info("Service started ok");
                     using (var scheduler = new Scheduler(schedulerFactory, new List<ScheduledTaskDetails>()))

@@ -2,7 +2,7 @@
   "profiles": {
     "Worker": {
       "commandName": "Project",
-      "commandLineArgs": "AuthenticationService"
+      "commandLineArgs": "AuthenticationService InvestmentBuilderService"
     }
   }
 }

@@ -21,8 +21,10 @@ namespace TestClient
 
     sealed class LoginOperation : Operation<LoginRequestDto, LoginResponseDto>
     {
-        public LoginOperation(IConnectionSession session) : base(session, "Login User", "AUTHENTICATE_USER_REQUEST", "AUTHENTICATE_USER_RESPONSE")
-        { }
+        public LoginOperation(IConnectionSession session, SessionObserver sessionObserver) : base(session, "Login User", "AUTHENTICATE_USER_REQUEST", "AUTHENTICATE_USER_RESPONSE")
+        {
+            m_sessionObserver = sessionObserver;
+        }
 
         protected override LoginRequestDto GetRequest()
         {
@@ -40,7 +42,13 @@ namespace TestClient
             {
                 Console.WriteLine($"Login request failed: {response.Error}");
             }
+            else
+            {
+                m_sessionObserver.UpdateSession(response.SessionID);
+            }
             return result;
         }
+
+        private readonly SessionObserver m_sessionObserver;
     }
 }
