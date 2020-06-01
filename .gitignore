@@ -360,6 +360,9 @@ release
 packages
 node_modules
 dist
+InvestmentBuilderFlask/app/static
+InvestmentBuilderFlask/venv/*
+
 *.VC.opendb
 *.VC.db
 *.vcxproj.user

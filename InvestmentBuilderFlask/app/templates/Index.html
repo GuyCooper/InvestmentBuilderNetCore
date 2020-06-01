@@ -1,0 +1,15 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<h1>Hi,{{user.name}}!</h1>    
+<div  ng-app="InvestmentRecord">
+    <div ng-controller="LayoutController">
+        <div class="loginBox">
+            <form ng-submit="doTest()">
+                <label>Click Here for data</label>
+                <button class="btn btn-primary" type="submit">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

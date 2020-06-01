@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{c268cbc8-ac21-4221-a45e-482fea5e8633}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>InvestmentBuilderFlask.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>MSBuild|{44a8f956-ac58-4ebe-93cd-755f12d197ce}|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>Pytest</TestFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="app\forms.py" />
+    <Compile Include="app\models.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\routes.py" />
+    <Compile Include="app\__init__.py" />
+    <Compile Include="config.py" />
+    <Compile Include="InvestmentBuilderFlask.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="app" />
+    <Folder Include="app\static\" />
+    <Folder Include="app\static\js\" />
+    <Folder Include="app\templates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="InvestmentBuilderFlask\">
+      <Id>{44a8f956-ac58-4ebe-93cd-755f12d197ce}</Id>
+      <Description>InvestmentBuilderFlask</Description>
+      <InterpreterPath>
+      </InterpreterPath>
+      <WindowsInterpreterPath>
+      </WindowsInterpreterPath>
+      <LibraryPath>Lib\</LibraryPath>
+      <Version>0.0</Version>
+      <Architecture>
+      </Architecture>
+      <PathEnvironmentVariable>
+      </PathEnvironmentVariable>
+    </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\static\js\test.js" />
+    <Content Include="app\templates\base.html" />
+    <Content Include="app\templates\Index.html" />
+    <Content Include="app\templates\login.html" />
+    <Content Include="app\templates\Register.html" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

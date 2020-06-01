@@ -1,0 +1,32 @@
+
+Python steps for creating a project:
+
+1. create a virtual environment.  this is required so you can rub different versions of python packages in different environments. A new environemnt
+should be created for each project or project group.
+
+a: open cmd prompt. create project folder. cd into project folder.
+b: run: python3 -m venv venv. This will create a subfolder in project folder called venv. 
+c: activate virtual env: from command line :\venv\scripts\activate/bat. command line will change to (venv) :\
+d: running python from command line will invoke it in the virtual environemnt.
+
+you will have to activate the environment each time you open a new command prompt.
+
+to run flask (web server) you need to set the following env variable to the top level .py file of your project to run it:
+
+:\ set FLASK_APP=testapp.py
+
+and then run:
+
+:\flask run
+
+updating the database schema:
+
+flask db migrate
+flask db upgrade
+
+running unit tests:
+from command line
+python -m unittest app.tests.MarketDataTests
+
+bob@bob.comm
+b00byJ@b23
